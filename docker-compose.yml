@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  dev-postgres:
+    image: postgres:15.1-alpine
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: tech-shelf
+      POSTGRES_PASSWORD: tech-shelf
+      POSTGRES_DB: tech-shelf
+    restart: always
+    networks:
+      - lesson
+networks:
+  lesson:
