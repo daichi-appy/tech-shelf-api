@@ -14,6 +14,7 @@ import (
 type IUserUsecase interface {
 	SignUp(user model.User) (model.UserResponse, error)
 	LogIn(user model.User) (string, error)
+	Auth(user model.User) (*model.User, error)
 }
 
 type userUsecase struct {
@@ -62,4 +63,22 @@ func (uu *userUsecase) LogIn(user model.User) (string, error) {
 		return "", err
 	}
 	return tokenString, nil
+}
+
+func (uu *userUsecase) Auth(user model.User) (*model.User, error) {
+	existingUser, err := uu.ur.FindByUID(user.UID)
+	if err != nil {
+			return nil, err
+	}
+
+	if existingUser != nil {
+			return existingUser, nil
+	}
+
+	err = uu.ur.CreateUser(&user)
+	if err != nil {
+			return nil, err
+	}
+	createdUser := &user
+	return createdUser, nil
 }

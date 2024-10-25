@@ -1,7 +1,6 @@
 package router
 
 import (
-	"net/http"
 	"os"
 	"tech-shelf/controller"
 
@@ -22,18 +21,12 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController, bc 
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"},
 		AllowCredentials: true,
 	}))
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
-		CookiePath:     "/",
-		CookieDomain:   os.Getenv("API_DOMAIN"),
-		CookieHTTPOnly: true,
-		CookieSameSite: http.SameSiteNoneMode,
-		CookieMaxAge:   60,
-	}))
 	
 	// ユーザー関連のルート
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.LogIn)
 	e.POST("/logout", uc.Logout)
+	e.POST("/auth", uc.Auth)
 	e.GET("/csrf", uc.CsrfToken)
 	
 	// タスク関連のルート
